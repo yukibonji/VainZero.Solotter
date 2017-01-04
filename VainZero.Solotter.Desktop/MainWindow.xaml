@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:desktopCore="clr-namespace:VainZero.Solotter.Desktop;assembly=VainZero.Solotter.Desktop.Core"
     xmlns:local="clr-namespace:VainZero.Solotter.Desktop"
     mc:Ignorable="d"
 
@@ -18,4 +19,22 @@
     Title="Solotter"
     Width="525"
     Height="350"
-    />
+    >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="PrimitiveResource.xaml" />
+
+                <ResourceDictionary Source="Authentication/AuthenticationPageTemplate.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <DataTemplate DataType="{x:Type desktopCore:MainFrame}">
+                <ContentPresenter Content="{Binding Content.Value}" />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.Content>
+        <desktopCore:MainFrame />
+    </Window.Content>
+</Window>

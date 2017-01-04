@@ -1,0 +1,43 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:desktopCore="clr-namespace:VainZero.Solotter.Desktop;assembly=VainZero.Solotter.Desktop.Core"
+    xmlns:local="clr-namespace:VainZero.Solotter.Desktop"
+    >
+    <DataTemplate DataType="{x:Type desktopCore:AuthenticationPage}">
+        <StackPanel>
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="20"
+                Text="Log In"
+                />
+
+            <TextBlock>
+                1. Click the Log In command and log in to Twitter.
+            </TextBlock>
+            <Button
+                Content="Start"
+                Command="{Binding GetPinCodeCommand}"
+                />
+
+            <Separator />
+            
+            <TextBlock>
+                2. Copy and paste your pin code (seven letter code) below.
+            </TextBlock>
+            
+            <TextBox
+                Text="{Binding PinCode.Value, UpdateSourceTrigger=PropertyChanged}"
+                />
+
+            <TextBlock>
+                3. Click the Authenticate button below to complete.
+            </TextBlock>
+
+            <Button
+                Content="Complete"
+                Command="{Binding AuthenticateCommand}"
+                />
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>
