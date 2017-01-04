@@ -49,11 +49,6 @@
     <Compile Include="AssemblyInfo.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DotNetKit.Application\DotNetKit.Application.csproj">
-      <Name>DotNetKit.Application</Name>
-      <Project>{6041f92e-05b3-46f2-bcec-ceec5b4a35e7}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\VainZero.Solotter.Core\VainZero.Solotter.Core.fsproj">
       <Name>VainZero.Solotter.Core</Name>
       <Project>{eb3b1ece-9746-44c1-a7fe-8ed9311a4fdd}</Project>

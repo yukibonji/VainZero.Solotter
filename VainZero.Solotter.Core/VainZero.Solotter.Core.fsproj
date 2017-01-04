@@ -48,13 +48,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DotNetKit.Application\DotNetKit.Application.csproj">
-      <Name>DotNetKit.Application</Name>
-      <Project>{6041f92e-05b3-46f2-bcec-ceec5b4a35e7}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
