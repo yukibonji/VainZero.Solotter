@@ -27,7 +27,7 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
     new ReactiveProperty<string>("")
 
   let authenticateCommand =
-    pinCode.Select(fun pinCode -> pinCode.Length = 7).ToReactiveCommand()
+    pinCode.Select(String.IsNullOrEmpty >> not).ToReactiveCommand()
 
   let authenticated =
     new ReplaySubject<_>()
@@ -36,9 +36,17 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
     authenticateCommand.Subscribe
       (fun _ ->
         let pinCode = pinCode.Value
+        let context = authenticationContext
         let credential =
-          Tweetinvi.AuthFlow.CreateCredentialsFromVerifierCode(pinCode, authenticationContext)
-        authenticated.OnNext(credential)
+          Tweetinvi.AuthFlow.CreateCredentialsFromVerifierCode(pinCode, context)
+        let token =
+          {
+            AccessToken =
+              credential.AccessToken
+            AccessSecret =
+              credential.AccessTokenSecret
+          }
+        authenticated.OnNext(token)
       ) |> ignore
 
   member this.GetPinCodeCommand =

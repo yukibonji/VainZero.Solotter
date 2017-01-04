@@ -5,39 +5,52 @@
     xmlns:local="clr-namespace:VainZero.Solotter.Desktop"
     >
     <DataTemplate DataType="{x:Type desktopCore:AuthenticationPage}">
-        <StackPanel>
+        <DataTemplate.Resources>
+            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                <Setter Property="Margin" Value="5,2,5,2" />
+                <Setter Property="Padding" Value="5,0,5,0" />
+            </Style>
+        </DataTemplate.Resources>
+        <DockPanel>
             <TextBlock
+                DockPanel.Dock="Top"
                 HorizontalAlignment="Center"
                 FontSize="20"
                 Text="Log In"
                 />
 
-            <TextBlock>
-                1. Click the Log In command and log in to Twitter.
-            </TextBlock>
-            <Button
-                Content="Start"
-                Command="{Binding GetPinCodeCommand}"
-                />
+            <StackPanel Margin="5">
+                <TextBlock>
+                    1. Click the Start button to start logging in to Twitter.
+                </TextBlock>
+                <Button
+                    Content="Start"
+                    Command="{Binding GetPinCodeCommand}"
+                    />
 
-            <Separator />
-            
-            <TextBlock>
-                2. Copy and paste your pin code (seven letter code) below.
-            </TextBlock>
-            
-            <TextBox
-                Text="{Binding PinCode.Value, UpdateSourceTrigger=PropertyChanged}"
-                />
+                <Separator />
 
-            <TextBlock>
-                3. Click the Authenticate button below to complete.
-            </TextBlock>
+                <TextBlock>
+                    2. Copy and paste your pin code (seven letter code) below.
+                </TextBlock>
 
-            <Button
-                Content="Complete"
-                Command="{Binding AuthenticateCommand}"
-                />
-        </StackPanel>
+                <TextBox
+                    Margin="5,2,5,2"
+                    FontFamily="Consolas"
+                    Text="{Binding PinCode.Value, UpdateSourceTrigger=PropertyChanged}"
+                    />
+
+                <Separator />
+
+                <TextBlock>
+                    3. Click the Authenticate button below to complete.
+                </TextBlock>
+
+                <Button
+                    Content="Complete"
+                    Command="{Binding AuthenticateCommand}"
+                    />
+            </StackPanel>
+        </DockPanel>
     </DataTemplate>
 </ResourceDictionary>

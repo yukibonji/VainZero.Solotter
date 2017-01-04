@@ -1,8 +1,12 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:VainZero.Solotter.Desktop.Main"
+    xmlns:local="clr-namespace:VainZero.Solotter.Desktop"
     xmlns:desktopCore="clr-namespace:VainZero.Solotter.Desktop;assembly=VainZero.Solotter.Desktop.Core"
     >
-    <DataTemplate DataType="{x:Type desktopCore:MainPage}" />
+    <DataTemplate DataType="{x:Type desktopCore:MainPage}">
+        <Grid Width="525" Height="350">
+            <TextBlock Text="Main Page." />
+        </Grid>
+    </DataTemplate>
 </ResourceDictionary>

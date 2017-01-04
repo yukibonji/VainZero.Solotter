@@ -17,8 +17,7 @@
     FontFamily="{StaticResource MaterialDesignFont}"
 
     Title="Solotter"
-    Width="525"
-    Height="350"
+    SizeToContent="WidthAndHeight"
     >
     <Window.Resources>
         <ResourceDictionary>
@@ -26,6 +25,8 @@
                 <ResourceDictionary Source="PrimitiveResource.xaml" />
 
                 <ResourceDictionary Source="Authentication/AuthenticationPageTemplate.xaml" />
+
+                <ResourceDictionary Source="Main/MainPageTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
             <DataTemplate DataType="{x:Type desktopCore:MainFrame}">
