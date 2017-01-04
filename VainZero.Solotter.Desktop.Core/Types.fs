@@ -1,5 +1,6 @@
 ﻿namespace VainZero.Solotter.Desktop
 
+open System
+
 type IPage =
-  interface
-  end
+  inherit IDisposable

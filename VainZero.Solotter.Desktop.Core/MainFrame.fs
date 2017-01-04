@@ -14,9 +14,9 @@ type MainFrame() =
   let initialPage =
     match accessToken.UserAccessToken with
     | Some token ->
-      MainPage(accessToken.ApplicationAccessToken, token) :> IPage
+      new MainPage(accessToken.ApplicationAccessToken, token) :> IPage
     | None ->
-      let page = AuthenticationPage(accessToken.ApplicationAccessToken)
+      let page = new AuthenticationPage(accessToken.ApplicationAccessToken)
       page.Authenticated.Subscribe
         (fun token ->
           loggedIn.OnNext(token)
@@ -26,14 +26,17 @@ type MainFrame() =
   let content =
     new ReactiveProperty<_>(initialValue = initialPage)
 
+  let visit nextPage =
+    use previousPage = content.Value
+    content.Value <- nextPage
+
   do
     loggedIn |> Observable.subscribe
       (fun userAccessToken ->
           let accessToken =
             { accessToken with UserAccessToken = Some userAccessToken }
           accessToken.Save()
-          content.Value <-
-            MainPage(accessToken.ApplicationAccessToken, userAccessToken) :> IPage
+          new MainPage(accessToken.ApplicationAccessToken, userAccessToken) |> visit
       )
       |> ignore
 

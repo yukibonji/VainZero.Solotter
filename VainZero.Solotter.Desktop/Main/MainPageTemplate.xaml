@@ -4,9 +4,80 @@
     xmlns:local="clr-namespace:VainZero.Solotter.Desktop"
     xmlns:desktopCore="clr-namespace:VainZero.Solotter.Desktop;assembly=VainZero.Solotter.Desktop.Core"
     >
+    <DataTemplate DataType="{x:Type desktopCore:TweetEditor}">
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Right" LastChildFill="False">
+                <Button
+                    DockPanel.Dock="Bottom"
+                    Content="Submit"
+                    Command="{Binding SubmitCommand}"
+                    />
+
+                <TextBlock
+                    DockPanel.Dock="Bottom"
+                    Text="{Binding TextRemainingLength.Value}"
+                    />
+            </DockPanel>
+
+            <TextBox
+                Margin="5,2,5,2"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"
+                >
+                <TextBox.InputBindings>
+                    <KeyBinding
+                        Gesture="Control+Enter"
+                        Command="{Binding SubmitCommand}"
+                        />
+                </TextBox.InputBindings>
+                <TextBox.Style>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                        <Style.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="MinLines" Value="3" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </DockPanel>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type desktopCore:Tweet}">
+        <Border
+            Margin="5,2,5,2"
+            Padding="5,0,5,0"
+            BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
+            BorderThickness="1"
+            >
+            <TextBlock
+                TextWrapping="Wrap"
+                Text="{Binding Text}"
+                />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type desktopCore:SelfTimeline}">
+        <ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Hidden">
+            <ItemsControl
+                IsTabStop="False"
+                ItemsSource="{Binding Items}"
+                Width="{Binding ActualWidth, ElementName=scrollViewer}"
+                />
+        </ScrollViewer>
+    </DataTemplate>
+    
     <DataTemplate DataType="{x:Type desktopCore:MainPage}">
-        <Grid Width="525" Height="350">
-            <TextBlock Text="Main Page." />
-        </Grid>
+        <DockPanel Width="525" Height="350">
+            <ContentPresenter
+                DockPanel.Dock="Top"
+                Content="{Binding TweetEditor}"
+                />
+
+            <Expander Header="Tweets">
+                <ContentPresenter Content="{Binding SelfTimeline}" />
+            </Expander>
+        </DockPanel>
     </DataTemplate>
 </ResourceDictionary>

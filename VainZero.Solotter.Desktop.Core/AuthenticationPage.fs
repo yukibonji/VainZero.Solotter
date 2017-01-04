@@ -61,4 +61,5 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
   member this.Authenticated =
     authenticated :> IObservable<_>
 
-  interface IPage
+  interface IPage with
+    override this.Dispose() = ()
