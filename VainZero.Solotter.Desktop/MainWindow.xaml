@@ -6,8 +6,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:VainZero.Solotter.Desktop"
     mc:Ignorable="d"
-    Title="MainWindow"
+
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextElement.FontWeight="Regular"
+    TextElement.FontSize="13"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{StaticResource MaterialDesignFont}"
+
+    Title="Solotter"
     Width="525"
     Height="350"
     />
-
