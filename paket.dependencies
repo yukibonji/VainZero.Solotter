@@ -1,1 +1,13 @@
 source https://www.nuget.org/api/v2
+
+nuget System.Reactive
+nuget System.Reactive.Interfaces 3.0.0
+nuget DotNetKit.Core
+nuget DotNetKit.FSharp
+nuget ReactiveProperty 3.0
+nuget TweetinviAPI
+
+group Desktop.View
+    source https://www.nuget.org/api/v2
+
+    nuget MaterialDesignThemes
