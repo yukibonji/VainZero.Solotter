@@ -45,39 +45,47 @@
     </DataTemplate>
     
     <DataTemplate DataType="{x:Type desktopCore:Tweet}">
-        <Border
-            Margin="5,2,5,2"
-            Padding="5,0,5,0"
-            BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
-            BorderThickness="1"
-            >
+        <ContentControl Padding="5">
             <TextBlock
                 TextWrapping="Wrap"
                 Text="{Binding Text}"
                 />
-        </Border>
+        </ContentControl>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type desktopCore:SelfTimeline}">
-        <ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Hidden">
-            <ItemsControl
-                IsTabStop="False"
-                ItemsSource="{Binding Items}"
-                Width="{Binding ActualWidth, ElementName=scrollViewer}"
-                />
-        </ScrollViewer>
+        <ListBox
+            IsTabStop="False"
+            ItemsSource="{Binding Items}"
+            Width="{Binding ActualWidth, ElementName=scrollViewer}"
+            />
     </DataTemplate>
     
     <DataTemplate DataType="{x:Type desktopCore:MainPage}">
-        <DockPanel Width="525" Height="350">
+        <DockPanel>
             <ContentPresenter
                 DockPanel.Dock="Top"
                 Content="{Binding TweetEditor}"
                 />
 
-            <Expander Header="Tweets">
-                <ContentPresenter Content="{Binding SelfTimeline}" />
-            </Expander>
+            <ListBox
+                DockPanel.Dock="Top"
+                ItemsSource="{Binding TabItems}"
+                SelectedItem="{Binding SelectedTabItem.Value}"
+                >
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Header}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ContentPresenter Content="{Binding SelectedTabItem.Value.Content}" />
         </DockPanel>
     </DataTemplate>
 </ResourceDictionary>

@@ -17,7 +17,8 @@
     FontFamily="{StaticResource MaterialDesignFont}"
 
     Title="Solotter"
-    SizeToContent="WidthAndHeight"
+    SizeToContent="Height"
+    Width="512"
     >
     <Window.Resources>
         <ResourceDictionary>

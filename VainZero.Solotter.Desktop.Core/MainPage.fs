@@ -100,6 +100,22 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
     override this.Dispose() =
       this.Dispose()
 
+type TabItem =
+  {
+    Header:
+      string
+    Content:
+      obj
+  }
+with
+  static member Create(name, content) =
+    {
+      Header =
+        name
+      Content =
+        content
+    }
+
 [<Sealed>]
 type MainPage(applicationAccessToken, userAccessToken) =
   let twitter =
@@ -118,6 +134,15 @@ type MainPage(applicationAccessToken, userAccessToken) =
   let selfTimeline =
     new SelfTimeline(twitter)
 
+  let tabItems =
+    [|
+      TabItem.Create("Empty", null)
+      TabItem.Create("Self", selfTimeline)
+    |]
+
+  let selectedTabItem =
+    new ReactiveProperty<_>(initialValue = tabItems.[0])
+
   let dispose () =
     selfTimeline.Dispose()
 
@@ -126,6 +151,12 @@ type MainPage(applicationAccessToken, userAccessToken) =
 
   member this.SelfTimeline =
     selfTimeline
+
+  member this.TabItems =
+    tabItems
+
+  member this.SelectedTabItem =
+    selectedTabItem
 
   member this.Dispose() =
     dispose ()
