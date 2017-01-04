@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetKit.Application", "Do
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VainZero.Solotter.Core", "VainZero.Solotter.Core\VainZero.Solotter.Core.fsproj", "{EB3B1ECE-9746-44C1-A7FE-8ED9311A4FDD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Desktop", "Desktop", "{3298E8C9-C647-4622-9EF9-F9C164502BAF}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VainZero.Solotter.Desktop.Core", "VainZero.Solotter.Desktop.Core\VainZero.Solotter.Desktop.Core.fsproj", "{D34EA758-EA8E-421F-AA0C-0EB0FD900435}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +25,15 @@ Global
 		{EB3B1ECE-9746-44C1-A7FE-8ED9311A4FDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB3B1ECE-9746-44C1-A7FE-8ED9311A4FDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB3B1ECE-9746-44C1-A7FE-8ED9311A4FDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D34EA758-EA8E-421F-AA0C-0EB0FD900435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D34EA758-EA8E-421F-AA0C-0EB0FD900435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D34EA758-EA8E-421F-AA0C-0EB0FD900435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D34EA758-EA8E-421F-AA0C-0EB0FD900435}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D34EA758-EA8E-421F-AA0C-0EB0FD900435} = {3298E8C9-C647-4622-9EF9-F9C164502BAF}
 	EndGlobalSection
 EndGlobal
