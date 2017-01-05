@@ -11,3 +11,5 @@ type AuthenticationAction =
 type IAuthenticationPage =
   inherit IObservable<AuthenticationAction>
   inherit IDisposable
+
+  abstract UserAccessToken: option<UserAccessToken>

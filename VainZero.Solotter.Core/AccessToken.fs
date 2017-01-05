@@ -48,3 +48,9 @@ with
     use stream = File.OpenWrite(AccessToken.FilePath)
     let serializer = DataContractSerializer(typeof<AccessToken>)
     serializer.WriteObject(stream, this)
+
+  member this.Login(userAccessToken) =
+    { this with UserAccessToken = Some userAccessToken }
+
+  member this.Logout() =
+    { this with UserAccessToken = None }
