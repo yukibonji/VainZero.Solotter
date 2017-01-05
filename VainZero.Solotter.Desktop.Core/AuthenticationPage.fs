@@ -35,18 +35,20 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
     let credential =
       Tweetinvi.AuthFlow.CreateCredentialsFromVerifierCode(pinCode, context)
     if credential |> isNull then
-      todo "invalid pincode?"
+      // TODO: fix
+      System.Windows.MessageBox.Show("Incorrect PinCode?") |> ignore
+      Observable.Never()
     else
       {
         AccessToken =
           credential.AccessToken
         AccessSecret =
           credential.AccessTokenSecret
-      } |> Login
+      } |> Login |> Observable.Return
 
   let authenticated =
     authenticateCommand
-      .Select(fun _ -> authenticate ())
+      .SelectMany(fun _ -> authenticate ())
       .Replay()
 
   let subscription =

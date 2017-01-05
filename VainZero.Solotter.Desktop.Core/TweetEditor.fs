@@ -3,7 +3,6 @@
 open System
 open System.Reactive.Linq
 open System.Reactive.Threading.Tasks
-open System.Windows
 open Reactive.Bindings
 
 [<Sealed>]
@@ -29,7 +28,8 @@ type TweetEditor(twitter: Tweetinvi.Models.ITwitterCredentials) =
     |> Observable.subscribe
       (function
         | null ->
-          MessageBox.Show("Failed.") |> ignore
+          // TODO: fix
+          System.Windows.MessageBox.Show("Failed.") |> ignore
         | tweet ->
           text.Value <- ""
       )
