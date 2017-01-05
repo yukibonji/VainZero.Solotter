@@ -1,5 +1,6 @@
 ﻿namespace VainZero.Solotter.Desktop
 
+open System
 open System.Reactive.Subjects
 open Reactive.Bindings
 open VainZero.Solotter
@@ -48,7 +49,7 @@ type MainFrame(accessToken) =
     | None ->
       visitAuthenticationPage ()
 
-  do
+  let loggedInSubscription =
     loggedIn |> Observable.subscribe
       (fun userAccessToken ->
           let accessToken =
@@ -56,16 +57,28 @@ type MainFrame(accessToken) =
           accessToken.Save()
           visitMainPage userAccessToken
       )
-      |> ignore
 
-  do
+  let loggedOutSubscription =
     loggedOut |> Observable.subscribe
-      (fun _ ->
-        visitAuthenticationPage ()
-      ) |> ignore
+      (fun _ -> visitAuthenticationPage ())
+
+  let dispose () =
+    loggedInSubscription.Dispose()
+    loggedOutSubscription.Dispose()
+    content.Value.Dispose()
+    content.Dispose()
+    loggedIn.Dispose()
+    loggedOut.Dispose()
 
   new() =
-    MainFrame(AccessToken.Load())
+    new MainFrame(AccessToken.Load())
 
   member this.Content =
     content
+
+  member this.Dispose() =
+    dispose ()
+
+  interface IDisposable with
+    override this.Dispose() =
+      this.Dispose()
