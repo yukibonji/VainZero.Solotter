@@ -1,0 +1,52 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:VainZero.Solotter.Desktop"
+    xmlns:converters="clr-namespace:VainZero.Windows.Converters;assembly=VainZero.Solotter.Desktop.Utility"
+    xmlns:desktopCore="clr-namespace:VainZero.Solotter.Desktop;assembly=VainZero.Solotter.Desktop.Core"
+    >
+    <DataTemplate DataType="{x:Type desktopCore:TweetEditor}">
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Right" LastChildFill="False">
+                <Button
+                    DockPanel.Dock="Bottom"
+                    Content="Submit"
+                    Command="{Binding SubmitCommand}"
+                    />
+
+                <TextBlock
+                    DockPanel.Dock="Bottom"
+                    Text="{Binding TextRemainingLength.Value}"
+                    />
+            </DockPanel>
+
+            <TextBox
+                Margin="5,2,5,2"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"
+                >
+                <TextBox.InputBindings>
+                    <KeyBinding
+                        Gesture="Control+Enter"
+                        Command="{Binding SubmitCommand}"
+                        />
+                </TextBox.InputBindings>
+                <TextBox.Style>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                        <Style.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="MinLines" Value="4" />
+                                <Setter Property="MaxLines" Value="6" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="False">
+                                <Setter Property="MinLines" Value="2" />
+                                <Setter Property="MaxLines" Value="2" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </DockPanel>
+    </DataTemplate>
+</ResourceDictionary>
