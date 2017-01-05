@@ -30,13 +30,13 @@
                 <ResourceDictionary Source="Main/MainPageTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate DataType="{x:Type desktopCore:MainFrame}">
+            <DataTemplate DataType="{x:Type desktopCore:AuthenticationFrame}">
                 <ContentPresenter Content="{Binding Content.Value}" />
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
     <Window.Content>
-        <desktopCore:MainFrame />
+        <desktopCore:AuthenticationFrame />
     </Window.Content>
 </Window>

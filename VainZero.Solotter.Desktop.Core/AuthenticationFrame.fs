@@ -8,7 +8,7 @@ open Reactive.Bindings
 open VainZero.Solotter
 
 [<Sealed>]
-type MainFrame(accessToken) =
+type AuthenticationFrame(accessToken) =
   let content =
     let emptyPage =
       { new IAuthenticationPage with 
@@ -44,7 +44,7 @@ type MainFrame(accessToken) =
     content.Dispose()
 
   new() =
-    new MainFrame(AccessToken.Load())
+    new AuthenticationFrame(AccessToken.Load())
 
   member this.Content =
     content

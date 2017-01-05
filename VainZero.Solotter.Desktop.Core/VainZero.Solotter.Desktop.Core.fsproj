@@ -50,7 +50,7 @@
     <Compile Include="Types.fs" />
     <Compile Include="AuthenticationPage.fs" />
     <Compile Include="MainPage.fs" />
-    <Compile Include="MainFrame.fs" />
+    <Compile Include="AuthenticationFrame.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VainZero.Solotter.Core\VainZero.Solotter.Core.fsproj">
