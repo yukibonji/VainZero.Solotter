@@ -28,6 +28,9 @@
                 <ResourceDictionary Source="Authentication/AuthenticationPageTemplate.xaml" />
 
                 <ResourceDictionary Source="Authenticated/AuthenticatedPageTemplate.xaml" />
+                <ResourceDictionary Source="Authenticated/TimelineTemplate.xaml" />
+                <ResourceDictionary Source="Authenticated/TweetEditorTemplate.xaml" />
+                <ResourceDictionary Source="Authenticated/TweetTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type desktopCore:AuthenticationFrame}">
