@@ -24,6 +24,7 @@
                 Margin="5,2,5,2"
                 AcceptsReturn="True"
                 TextWrapping="Wrap"
+                MaxLines="5"
                 Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"
                 >
                 <TextBox.InputBindings>
@@ -32,20 +33,6 @@
                         Command="{Binding SubmitCommand}"
                         />
                 </TextBox.InputBindings>
-                <TextBox.Style>
-                    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
-                        <Style.Triggers>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="MinLines" Value="4" />
-                                <Setter Property="MaxLines" Value="6" />
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="False">
-                                <Setter Property="MinLines" Value="2" />
-                                <Setter Property="MaxLines" Value="2" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
             </TextBox>
         </DockPanel>
     </DataTemplate>
