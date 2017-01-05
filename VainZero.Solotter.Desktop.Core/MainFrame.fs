@@ -22,18 +22,24 @@ type MainFrame() =
     use previousPage = content.Value
     content.Value <- nextPage
 
+  let visitAuthenticationPage () =
+    let page = new AuthenticationPage(accessToken.ApplicationAccessToken)
+    page.Authenticated.Subscribe
+      (fun token ->
+        loggedIn.OnNext(token)
+      ) |> ignore
+    page |> visit
+
+  let visitMainPage userAccessToken =
+    new MainPage(accessToken.ApplicationAccessToken, userAccessToken) |> visit
+
   // Visit first page.
   do
     match accessToken.UserAccessToken with
-    | Some token ->
-      new MainPage(accessToken.ApplicationAccessToken, token) |> visit
+    | Some userAccessToken ->
+      visitMainPage userAccessToken
     | None ->
-      let page = new AuthenticationPage(accessToken.ApplicationAccessToken)
-      page.Authenticated.Subscribe
-        (fun token ->
-          loggedIn.OnNext(token)
-        ) |> ignore
-      page |> visit
+      visitAuthenticationPage ()
 
   do
     loggedIn |> Observable.subscribe
@@ -41,7 +47,7 @@ type MainFrame() =
           let accessToken =
             { accessToken with UserAccessToken = Some userAccessToken }
           accessToken.Save()
-          new MainPage(accessToken.ApplicationAccessToken, userAccessToken) |> visit
+          visitMainPage userAccessToken
       )
       |> ignore
 
