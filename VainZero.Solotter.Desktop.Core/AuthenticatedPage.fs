@@ -126,7 +126,7 @@ with
     }
 
 [<Sealed>]
-type MainPage(applicationAccessToken, userAccessToken) =
+type AuthenticatedPage(applicationAccessToken, userAccessToken) =
   let twitter =
     let (a: ApplicationAccessToken) = applicationAccessToken
     let (u: UserAccessToken) = userAccessToken

@@ -49,7 +49,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="AuthenticationPage.fs" />
-    <Compile Include="MainPage.fs" />
+    <Compile Include="AuthenticatedPage.fs" />
     <Compile Include="AuthenticationFrame.fs" />
   </ItemGroup>
   <ItemGroup>

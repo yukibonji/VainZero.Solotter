@@ -93,7 +93,7 @@
         <ContentPresenter Content="{Binding Timeline}" />
     </DataTemplate>
     
-    <DataTemplate DataType="{x:Type desktopCore:MainPage}">
+    <DataTemplate DataType="{x:Type desktopCore:AuthenticatedPage}">
         <DockPanel>
             <DockPanel.InputBindings>
                 <KeyBinding Gesture="Control+Shift+Q" Command="{Binding LogoutCommand}" />

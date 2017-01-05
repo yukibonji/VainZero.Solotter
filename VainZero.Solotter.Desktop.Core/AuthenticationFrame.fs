@@ -25,7 +25,7 @@ type AuthenticationFrame(accessToken) =
     content.Value <-
       match action with
       | Login userAccessToken ->
-        new MainPage(accessToken.ApplicationAccessToken, userAccessToken) :> IAuthenticationPage
+        new AuthenticatedPage(accessToken.ApplicationAccessToken, userAccessToken) :> IAuthenticationPage
       | Logout ->
         new AuthenticationPage(accessToken.ApplicationAccessToken) :> IAuthenticationPage
 

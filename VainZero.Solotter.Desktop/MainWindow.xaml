@@ -27,7 +27,7 @@
 
                 <ResourceDictionary Source="Authentication/AuthenticationPageTemplate.xaml" />
 
-                <ResourceDictionary Source="Main/MainPageTemplate.xaml" />
+                <ResourceDictionary Source="Authenticated/AuthenticatedPageTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type desktopCore:AuthenticationFrame}">
