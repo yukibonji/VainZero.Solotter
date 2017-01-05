@@ -4,6 +4,7 @@ open System
 open System.Reactive.Linq
 open System.Reactive.Subjects
 open DotNetKit.Functional.Commands
+open DotNetKit.FSharp
 open Reactive.Bindings
 open VainZero.Solotter
 
@@ -29,25 +30,32 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
   let authenticateCommand =
     pinCode.Select(String.IsNullOrEmpty >> not).ToReactiveCommand()
 
-  let authenticated =
-    new ReplaySubject<_>()
+  let authenticate () =
+    let pinCode = pinCode.Value
+    let context = authenticationContext
+    let credential =
+      Tweetinvi.AuthFlow.CreateCredentialsFromVerifierCode(pinCode, context)
+    if credential |> isNull then
+      todo "invalid pincode?"
+    else
+      {
+        AccessToken =
+          credential.AccessToken
+        AccessSecret =
+          credential.AccessTokenSecret
+      }
 
-  do
-    authenticateCommand.Subscribe
-      (fun _ ->
-        let pinCode = pinCode.Value
-        let context = authenticationContext
-        let credential =
-          Tweetinvi.AuthFlow.CreateCredentialsFromVerifierCode(pinCode, context)
-        let token =
-          {
-            AccessToken =
-              credential.AccessToken
-            AccessSecret =
-              credential.AccessTokenSecret
-          }
-        authenticated.OnNext(token)
-      ) |> ignore
+  let authenticated =
+    authenticateCommand
+      .Select(fun _ -> authenticate ())
+      .Replay()
+
+  let subscription =
+    authenticated.Connect()
+
+  let dispose () =
+    subscription.Dispose()
+    pinCode.Dispose()
 
   member this.GetPinCodeCommand =
     getPinCodeCommand
@@ -61,5 +69,9 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
   member this.Authenticated =
     authenticated :> IObservable<_>
 
+  member this.Dispose() =
+    dispose ()
+
   interface IPage with
-    override this.Dispose() = ()
+    override this.Dispose() =
+      this.Dispose()
