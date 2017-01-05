@@ -5,9 +5,7 @@ open Reactive.Bindings
 open VainZero.Solotter
 
 [<Sealed>]
-type MainFrame() =
-  let accessToken = AccessToken.Load()
-
+type MainFrame(accessToken) =
   let loggedIn =
     new ReplaySubject<_>()
 
@@ -65,6 +63,9 @@ type MainFrame() =
       (fun _ ->
         visitAuthenticationPage ()
       ) |> ignore
+
+  new() =
+    MainFrame(AccessToken.Load())
 
   member this.Content =
     content
