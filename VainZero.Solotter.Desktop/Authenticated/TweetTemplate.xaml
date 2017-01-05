@@ -10,11 +10,11 @@
             <DockPanel LastChildFill="False" HorizontalAlignment="Stretch">
                 <TextBlock
                     DockPanel.Dock="Left"
-                    Text="{Binding CreatorScreenName}"
+                    Text="{Binding CreatorName}"
                     />
 
                 <TextBlock DockPanel.Dock="Left" Opacity="0.7">
-                    @<Run Text="{Binding CreatorName, Mode=OneTime}" />
+                    @<Run Text="{Binding CreatorScreenName, Mode=OneTime}" />
                 </TextBlock>
 
                 <TextBlock
