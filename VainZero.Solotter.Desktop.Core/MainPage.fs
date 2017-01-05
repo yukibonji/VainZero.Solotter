@@ -152,7 +152,11 @@ type MainPage(applicationAccessToken, userAccessToken) =
   let selectedTabItem =
     new ReactiveProperty<_>(initialValue = tabItems.[0])
 
+  let logoutCommand =
+    new ReactiveCommand()
+
   let dispose () =
+    logoutCommand.Dispose()
     selfTimeline.Dispose()
 
   member this.TweetEditor =
@@ -166,6 +170,9 @@ type MainPage(applicationAccessToken, userAccessToken) =
 
   member this.SelectedTabItem =
     selectedTabItem
+
+  member this.LogoutCommand =
+    logoutCommand
 
   member this.Dispose() =
     dispose ()

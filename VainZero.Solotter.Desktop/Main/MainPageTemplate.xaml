@@ -95,6 +95,10 @@
     
     <DataTemplate DataType="{x:Type desktopCore:MainPage}">
         <DockPanel>
+            <DockPanel.InputBindings>
+                <KeyBinding Gesture="Control+Shift+Q" Command="{Binding LogoutCommand}" />
+            </DockPanel.InputBindings>
+            
             <ContentPresenter
                 DockPanel.Dock="Top"
                 Content="{Binding TweetEditor}"

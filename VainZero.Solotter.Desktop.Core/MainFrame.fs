@@ -11,6 +11,9 @@ type MainFrame() =
   let loggedIn =
     new ReplaySubject<_>()
 
+  let loggedOut =
+    new Subject<_>()
+
   let content =
     let emptyPage =
       { new IPage with 
@@ -28,10 +31,16 @@ type MainFrame() =
       (fun token ->
         loggedIn.OnNext(token)
       ) |> ignore
-    page |> visit
+    visit page
 
   let visitMainPage userAccessToken =
-    new MainPage(accessToken.ApplicationAccessToken, userAccessToken) |> visit
+    let page =
+      new MainPage(accessToken.ApplicationAccessToken, userAccessToken)
+    page.LogoutCommand |> Observable.subscribe
+      (fun _ ->
+        loggedOut.OnNext(())
+      ) |> ignore
+    visit page
 
   // Visit first page.
   do
@@ -50,6 +59,12 @@ type MainFrame() =
           visitMainPage userAccessToken
       )
       |> ignore
+
+  do
+    loggedOut |> Observable.subscribe
+      (fun _ ->
+        visitAuthenticationPage ()
+      ) |> ignore
 
   member this.Content =
     content
