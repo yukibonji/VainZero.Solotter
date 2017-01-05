@@ -1,7 +1,9 @@
 ﻿namespace VainZero.Solotter.Desktop
 
+open System
 open System.Reactive.Linq
 open System.Reactive.Threading.Tasks
+open System.Windows
 open Reactive.Bindings
 
 [<Sealed>]
@@ -18,19 +20,24 @@ type TweetEditor(twitter: Tweetinvi.Models.ITwitterCredentials) =
       .ToReadOnlyReactiveProperty()
 
   let submitCommand =
-    textRemainingLength
-      .Select(fun length -> 0 <= length && length < TweetLength)
+    text
+      .Select(String.IsNullOrWhiteSpace >> not)
       .ToReactiveCommand()
 
   let submit () =
-    Tweetinvi.TweetAsync.PublishTweet(text.Value)
-      .ToObservable()
-      .Do(fun _ -> text.Value <- "")
+    Tweetinvi.TweetAsync.PublishTweet(text.Value).ToObservable()
+    |> Observable.subscribe
+      (function
+        | null ->
+          MessageBox.Show("Failed.") |> ignore
+        | tweet ->
+          text.Value <- ""
+      )
+    |> ignore
 
   let subscription =
     submitCommand
-      .Select(fun _ -> submit())
-      .Concat()
+      .Select(fun _ -> submit ())
       .Publish()
       .Connect()
 
