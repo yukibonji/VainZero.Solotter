@@ -20,37 +20,28 @@ type MainFrame(accessToken) =
   let authenticationActions =
     content.SelectMany(fun actions -> actions :> IObservable<_>)
 
-  let visit nextPage =
+  let solve action =
     use previousPage = content.Value
-    content.Value <- nextPage
-
-  let visitAuthenticationPage () =
-    new AuthenticationPage(accessToken.ApplicationAccessToken) |> visit
-
-  let visitMainPage userAccessToken =
-    new MainPage(accessToken.ApplicationAccessToken, userAccessToken) |> visit
+    content.Value <-
+      match action with
+      | Login userAccessToken ->
+        new MainPage(accessToken.ApplicationAccessToken, userAccessToken) :> IPage
+      | Logout ->
+        new AuthenticationPage(accessToken.ApplicationAccessToken) :> IPage
 
   let subscription =
-    authenticationActions |> Observable.subscribe
-      (function
-        | Login userAccessToken ->
-          visitMainPage userAccessToken
-        | Logout ->
-          visitAuthenticationPage ()
-      )
+    let initialAction =
+      match accessToken.UserAccessToken with
+      | Some userAccessToken ->
+        Login userAccessToken
+      | None ->
+        Logout
+    authenticationActions.StartWith(initialAction) |> Observable.subscribe solve
 
   let dispose () =
     subscription.Dispose()
     content.Value.Dispose()
     content.Dispose()
-
-  // Visit first page.
-  do
-    match accessToken.UserAccessToken with
-    | Some userAccessToken ->
-      visitMainPage userAccessToken
-    | None ->
-      visitAuthenticationPage ()
 
   new() =
     new MainFrame(AccessToken.Load())
