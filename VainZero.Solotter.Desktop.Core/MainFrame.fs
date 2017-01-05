@@ -11,7 +11,7 @@ open VainZero.Solotter
 type MainFrame(accessToken) =
   let content =
     let emptyPage =
-      { new IPage with 
+      { new IAuthenticationPage with 
           override this.Subscribe(_) = Disposable.Empty
           override this.Dispose() = ()
       }
@@ -25,9 +25,9 @@ type MainFrame(accessToken) =
     content.Value <-
       match action with
       | Login userAccessToken ->
-        new MainPage(accessToken.ApplicationAccessToken, userAccessToken) :> IPage
+        new MainPage(accessToken.ApplicationAccessToken, userAccessToken) :> IAuthenticationPage
       | Logout ->
-        new AuthenticationPage(accessToken.ApplicationAccessToken) :> IPage
+        new AuthenticationPage(accessToken.ApplicationAccessToken) :> IAuthenticationPage
 
   let subscription =
     let initialAction =

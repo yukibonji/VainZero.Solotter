@@ -8,6 +8,6 @@ type AuthenticationAction =
     of UserAccessToken
   | Logout
 
-type IPage =
+type IAuthenticationPage =
   inherit IObservable<AuthenticationAction>
   inherit IDisposable

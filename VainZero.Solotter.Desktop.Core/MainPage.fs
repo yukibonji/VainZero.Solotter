@@ -185,4 +185,4 @@ type MainPage(applicationAccessToken, userAccessToken) =
     override this.Dispose() =
       this.Dispose()
 
-  interface IPage
+  interface IAuthenticationPage
