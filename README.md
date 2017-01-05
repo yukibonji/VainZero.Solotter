@@ -1,5 +1,6 @@
 # Solotter
-A twitter client for those who want to keep concentration.
+A twitter client for those who want to stay focused on the work.
 
-## License (ライセンス)
-[MIT License](LICENSE.md)
+## Features
+- Submit tweets.
+- Show your tweets only.
