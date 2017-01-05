@@ -1,0 +1,39 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:VainZero.Solotter.Desktop"
+    xmlns:converters="clr-namespace:VainZero.Windows.Converters;assembly=VainZero.Solotter.Desktop.Utility"
+    xmlns:desktopCore="clr-namespace:VainZero.Solotter.Desktop;assembly=VainZero.Solotter.Desktop.Core"
+    >
+    <DataTemplate DataType="{x:Type desktopCore:AuthenticatedPage}">
+        <DockPanel>
+            <DockPanel.InputBindings>
+                <KeyBinding Gesture="Control+Shift+Q" Command="{Binding LogoutCommand}" />
+            </DockPanel.InputBindings>
+            
+            <ContentPresenter
+                DockPanel.Dock="Top"
+                Content="{Binding TweetEditor}"
+                />
+
+            <ListBox
+                DockPanel.Dock="Top"
+                ItemsSource="{Binding TabItems}"
+                SelectedItem="{Binding SelectedTabItem.Value}"
+                >
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Header}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ContentPresenter Content="{Binding SelectedTabItem.Value.Content}" />
+        </DockPanel>
+    </DataTemplate>
+</ResourceDictionary>
