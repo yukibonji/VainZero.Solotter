@@ -49,6 +49,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="AuthenticationPage.fs" />
+    <Compile Include="TweetEditor.fs" />
     <Compile Include="AuthenticatedPage.fs" />
     <Compile Include="AuthenticationFrame.fs" />
   </ItemGroup>

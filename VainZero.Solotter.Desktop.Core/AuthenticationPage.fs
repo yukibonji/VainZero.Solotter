@@ -2,7 +2,6 @@
 
 open System
 open System.Reactive.Linq
-open System.Reactive.Subjects
 open DotNetKit.Functional.Commands
 open DotNetKit.FSharp
 open Reactive.Bindings
