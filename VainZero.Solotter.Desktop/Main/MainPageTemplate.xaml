@@ -75,10 +75,10 @@
         </StackPanel>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type desktopCore:SelfTimeline}">
+    <DataTemplate DataType="{x:Type desktopCore:Timeline}">
         <ListBox
             IsTabStop="False"
-            ItemsSource="{Binding Items}"
+            ItemsSource="{Binding Tweets}"
             MaxHeight="450"
             >
             <ListBox.Resources>
@@ -87,6 +87,10 @@
                 </Style>
             </ListBox.Resources>
         </ListBox>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type desktopCore:SelfTimeline}">
+        <ContentPresenter Content="{Binding Timeline}" />
     </DataTemplate>
     
     <DataTemplate DataType="{x:Type desktopCore:MainPage}">

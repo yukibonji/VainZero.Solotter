@@ -56,6 +56,11 @@ type Tweet(tweet: Tweetinvi.Models.ITweet) =
   member this.CreationDateTime = tweet.CreatedAt.ToLocalTime()
 
 [<Sealed>]
+type Timeline(tweets) =
+  member this.Tweets: ReadOnlyReactiveCollection<Tweet> =
+    tweets
+
+[<Sealed>]
 type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
   let items =
     new ReactiveCollection<_>()
@@ -91,11 +96,11 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
     cancellationTokenSource.Dispose()
     items.Dispose()
 
-  let readOnlyItems =
-    items.ToReadOnlyReactiveCollection()
+  let timeline =
+    Timeline(items.ToReadOnlyReactiveCollection())
 
-  member this.Items =
-    readOnlyItems
+  member this.Timeline =
+    timeline
 
   member this.Dispose() =
     dispose ()
