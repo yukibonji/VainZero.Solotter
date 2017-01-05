@@ -29,7 +29,7 @@
 
                 <ResourceDictionary Source="Main/MainPageTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <DataTemplate DataType="{x:Type desktopCore:MainFrame}">
                 <ContentPresenter Content="{Binding Content.Value}" />
             </DataTemplate>

@@ -11,24 +11,29 @@ type MainFrame() =
   let loggedIn =
     new ReplaySubject<_>()
 
-  let initialPage =
+  let content =
+    let emptyPage =
+      { new IPage with 
+          override this.Dispose() = ()
+      }
+    new ReactiveProperty<_>(initialValue = emptyPage)
+
+  let visit nextPage =
+    use previousPage = content.Value
+    content.Value <- nextPage
+
+  // Visit first page.
+  do
     match accessToken.UserAccessToken with
     | Some token ->
-      new MainPage(accessToken.ApplicationAccessToken, token) :> IPage
+      new MainPage(accessToken.ApplicationAccessToken, token) |> visit
     | None ->
       let page = new AuthenticationPage(accessToken.ApplicationAccessToken)
       page.Authenticated.Subscribe
         (fun token ->
           loggedIn.OnNext(token)
         ) |> ignore
-      page :> IPage
-
-  let content =
-    new ReactiveProperty<_>(initialValue = initialPage)
-
-  let visit nextPage =
-    use previousPage = content.Value
-    content.Value <- nextPage
+      page |> visit
 
   do
     loggedIn |> Observable.subscribe
