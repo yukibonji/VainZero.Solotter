@@ -26,15 +26,17 @@ type TweetEditor(twitter: Tweetinvi.Models.ITwitterCredentials) =
       .Select(fun length -> 0 <= length && length < TweetLength)
       .ToReactiveCommand()
 
+  let submit () =
+    Tweetinvi.TweetAsync.PublishTweet(text.Value)
+      .ToObservable()
+      .Do(fun _ -> text.Value <- "")
+
   let subscription =
-    submitCommand |> Observable.subscribe
-      (fun _ ->
-        async {
-          let! tweet =
-            Tweetinvi.TweetAsync.PublishTweet(text.Value) |> Async.AwaitTask
-          text.Value <- ""
-        } |> Async.Start
-      )
+    submitCommand
+      .Select(fun _ -> submit())
+      .Concat()
+      .Publish()
+      .Connect()
 
   member this.Text =
     text
