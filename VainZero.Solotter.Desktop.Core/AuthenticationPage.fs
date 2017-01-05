@@ -43,7 +43,7 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
           credential.AccessToken
         AccessSecret =
           credential.AccessTokenSecret
-      }
+      } |> Login
 
   let authenticated =
     authenticateCommand
@@ -72,6 +72,12 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
   member this.Dispose() =
     dispose ()
 
-  interface IPage with
+  interface IObservable<AuthenticationAction> with
+    override this.Subscribe(observer) =
+      authenticated.Subscribe(observer)
+
+  interface IDisposable with
     override this.Dispose() =
       this.Dispose()
+
+  interface IPage

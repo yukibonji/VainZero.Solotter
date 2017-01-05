@@ -177,6 +177,10 @@ type MainPage(applicationAccessToken, userAccessToken) =
   member this.Dispose() =
     dispose ()
 
+  interface IObservable<AuthenticationAction> with
+    override this.Subscribe(observer) =
+      logoutCommand.Select(fun _ -> Logout).Subscribe(observer)
+
   interface IDisposable with
     override this.Dispose() =
       this.Dispose()
