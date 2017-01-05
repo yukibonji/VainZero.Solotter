@@ -79,6 +79,7 @@
         <ListBox
             IsTabStop="False"
             ItemsSource="{Binding Items}"
+            MaxHeight="450"
             >
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesignListBoxItem}">
