@@ -35,7 +35,12 @@
                     <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
                         <Style.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="MinLines" Value="3" />
+                                <Setter Property="MinLines" Value="4" />
+                                <Setter Property="MaxLines" Value="6" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="False">
+                                <Setter Property="MinLines" Value="2" />
+                                <Setter Property="MaxLines" Value="2" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
