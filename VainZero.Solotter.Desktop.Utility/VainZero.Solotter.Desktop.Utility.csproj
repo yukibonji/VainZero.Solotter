@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Windows\Converters\DateTimeToLocalFullDateTimeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VainZero.Solotter.Core\VainZero.Solotter.Core.fsproj">

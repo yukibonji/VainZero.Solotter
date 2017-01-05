@@ -48,8 +48,10 @@ type TweetEditor(twitter: Tweetinvi.Models.ITwitterCredentials) =
 [<Sealed>]
 type Tweet(tweet: Tweetinvi.Models.ITweet) =
   member this.Id = tweet.Id
-
   member this.Text = tweet.Text
+  member this.CreatorName = tweet.CreatedBy.Name
+  member this.CreatorScreenName = tweet.CreatedBy.ScreenName
+  member this.CreationDateTime = tweet.CreatedAt.ToLocalTime()
 
 [<Sealed>]
 type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
