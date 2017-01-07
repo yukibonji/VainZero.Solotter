@@ -4,6 +4,7 @@ open System
 open System.Reactive.Disposables
 open System.Reactive.Linq
 open System.Reactive.Subjects
+open DotNetKit.FSharp
 open Reactive.Bindings
 open VainZero.Solotter
 
@@ -22,11 +23,11 @@ type AuthenticationFrame
 
     let pageDisposable =
       new SerialDisposable()
-    disposables.Add(pageDisposable)
+      |> tap disposables.Add
 
     let authenticationActions =
       new Subject<AuthenticationAction>()
-    disposables.Add(authenticationActions)
+      |> tap disposables.Add
 
     let saveAccessToken action =
       let userAccessToken =
@@ -68,7 +69,7 @@ type AuthenticationFrame
               )
           )
         .ToReadOnlyReactiveProperty()
-    disposables.Add(content)
+      |> tap disposables.Add
 
     new AuthenticationFrame(content, disposables)
 
