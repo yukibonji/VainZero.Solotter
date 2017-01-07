@@ -4,11 +4,15 @@ open System
 open System.Reactive.Disposables
 open System.Reactive.Linq
 open System.Reactive.Subjects
+open DotNetKit.FSharp
 open Reactive.Bindings
 open VainZero.Solotter
 
 [<Sealed>]
 type AuthenticationFrame(accessToken: AccessToken) =
+  let disposables =
+    new CompositeDisposable()
+
   let content =
     let emptyPage =
       { new IAuthenticationPage with 
@@ -17,6 +21,7 @@ type AuthenticationFrame(accessToken: AccessToken) =
           override this.Dispose() = ()
       }
     new ReactiveProperty<_>(initialValue = emptyPage)
+    |> tap disposables.Add
 
   let applicationAccessToken =
     accessToken.ApplicationAccessToken
@@ -33,7 +38,7 @@ type AuthenticationFrame(accessToken: AccessToken) =
   let authenticationActions =
     content.SelectMany(fun actions -> actions :> IObservable<_>)
 
-  let subscription =
+  do
     authenticationActions.StartWith(initialAction) |> Observable.subscribe
       (fun action ->
         use previousPage = content.Value
@@ -47,8 +52,9 @@ type AuthenticationFrame(accessToken: AccessToken) =
             new AuthenticationPage(applicationAccessToken) :> IAuthenticationPage
         content.Value <- nextPage
       )
+    |> disposables.Add
 
-  let accessTokenSavingSubscription =
+  do
     authenticationActions |> Observable.subscribe
       (fun action ->
         let userAccessToken =
@@ -66,12 +72,11 @@ type AuthenticationFrame(accessToken: AccessToken) =
           }
         accessToken.Save()
       )
+    |> disposables.Add
 
   let dispose () =
-    accessTokenSavingSubscription.Dispose()
-    subscription.Dispose()
     content.Value.Dispose()
-    content.Dispose()
+    disposables.Dispose()
 
   new() =
     new AuthenticationFrame(AccessToken.Load())
