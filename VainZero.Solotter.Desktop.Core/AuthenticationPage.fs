@@ -2,6 +2,7 @@
 
 open System
 open System.Reactive.Linq
+open System.Windows.Input
 open DotNetKit.Functional.Commands
 open DotNetKit.FSharp
 open Reactive.Bindings
@@ -65,7 +66,7 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
     pinCode
 
   member this.AuthenticateCommand =
-    authenticateCommand
+    authenticateCommand :> ICommand
 
   member this.Authenticated =
     authenticated :> IObservable<_>

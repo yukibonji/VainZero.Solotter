@@ -2,6 +2,7 @@
 
 open System
 open System.Reactive.Linq
+open System.Windows.Input
 open Reactive.Bindings
 open VainZero.Solotter
 
@@ -68,7 +69,7 @@ type AuthenticatedPage(applicationAccessToken, userAccessToken) =
     selectedTabItem
 
   member this.LogoutCommand =
-    logoutCommand
+    logoutCommand :> ICommand
 
   member this.Dispose() =
     dispose ()
