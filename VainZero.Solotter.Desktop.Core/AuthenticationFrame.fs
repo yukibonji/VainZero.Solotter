@@ -33,35 +33,42 @@ type AuthenticationFrame(accessToken: AccessToken) =
   let authenticationActions =
     content.SelectMany(fun actions -> actions :> IObservable<_>)
 
-  let solve action =
-    use previousPage = content.Value
-    let (nextPage, authentication) =
-      match action with
-      | Login userAccessToken ->
-        let authentication =
-          Authentication.FromAccessToken(applicationAccessToken, userAccessToken)
-        let page =
-          new AuthenticatedPage(authentication) :> IAuthenticationPage
-        (page, Some authentication)
-      | Logout ->
-        let page =
-          new AuthenticationPage(applicationAccessToken) :> IAuthenticationPage
-        (page, None)
-    content.Value <- nextPage
-
-    let accessToken =
-      {
-        ApplicationAccessToken =
-          applicationAccessToken
-        UserAccessToken =
-          authentication |> Option.map (fun a -> a.UserAccessToken)
-      }
-    accessToken.Save()
-
   let subscription =
-    authenticationActions.StartWith(initialAction) |> Observable.subscribe solve
+    authenticationActions.StartWith(initialAction) |> Observable.subscribe
+      (fun action ->
+        use previousPage = content.Value
+        let nextPage =
+          match action with
+          | Login userAccessToken ->
+            let authentication =
+              Authentication.FromAccessToken(applicationAccessToken, userAccessToken)
+            new AuthenticatedPage(authentication) :> IAuthenticationPage
+          | Logout ->
+            new AuthenticationPage(applicationAccessToken) :> IAuthenticationPage
+        content.Value <- nextPage
+      )
+
+  let accessTokenSavingSubscription =
+    authenticationActions |> Observable.subscribe
+      (fun action ->
+        let userAccessToken =
+          match action with
+          | Login userAccessToken ->
+            Some userAccessToken
+          | Logout ->
+            None
+        let accessToken =
+          {
+            ApplicationAccessToken =
+              applicationAccessToken
+            UserAccessToken =
+              userAccessToken
+          }
+        accessToken.Save()
+      )
 
   let dispose () =
+    accessTokenSavingSubscription.Dispose()
     subscription.Dispose()
     content.Value.Dispose()
     content.Dispose()
