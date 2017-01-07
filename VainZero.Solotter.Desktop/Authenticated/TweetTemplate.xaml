@@ -6,7 +6,7 @@
     xmlns:desktopCore="clr-namespace:VainZero.Solotter.Desktop;assembly=VainZero.Solotter.Desktop.Core"
     >
     <DataTemplate DataType="{x:Type desktopCore:Tweet}">
-        <StackPanel Margin="5">
+        <StackPanel>
             <DockPanel LastChildFill="False" HorizontalAlignment="Stretch">
                 <TextBlock
                     DockPanel.Dock="Left"
