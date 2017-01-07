@@ -5,6 +5,7 @@ open System.Reactive.Disposables
 open System.Threading
 open DotNetKit.FSharp
 open Reactive.Bindings
+open System.Windows
 
 [<Sealed>]
 type Tweet(tweet: Tweetinvi.Models.ITweet) =
@@ -13,6 +14,26 @@ type Tweet(tweet: Tweetinvi.Models.ITweet) =
   member this.CreatorName = tweet.CreatedBy.Name
   member this.CreatorScreenName = tweet.CreatedBy.ScreenName
   member this.CreationDateTime = tweet.CreatedAt.ToLocalTime()
+
+  member val DeleteCommand =
+    new ReactiveCommand()
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]  
+module Tweet =
+  let deleteAsync twitter (tweet: Tweet) =
+    async {
+      let message =
+        sprintf "Do you want to delete this tweet?\r\n\r\n%s" tweet.Text
+      if
+        MessageBox.Show(message, "Solotter", MessageBoxButton.YesNo)
+        = MessageBoxResult.Yes
+      then
+        let! result = Tweetinvi.TweetAsync.DestroyTweet(tweet.Id) |> Async.AwaitTask
+        if result then
+          MessageBox.Show("Deleted successfully.") |> ignore
+        else
+          MessageBox.Show("Deletion failed.") |> ignore
+    }
 
 [<Sealed>]
 type Timeline(tweets) =
@@ -35,6 +56,15 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
   let userStream =
     Tweetinvi.Stream.CreateUserStream(twitter)
 
+  let selfTweet tweet =
+    Tweet(tweet)
+    |> tap
+      (fun tweet ->
+        tweet.DeleteCommand |> Observable.subscribe
+          (fun _ -> tweet |> Tweet.deleteAsync twitter |> Async.Start)
+        |> disposables.Add
+      )
+
   let collectAsync =
     async {
       let! selfUser =
@@ -42,14 +72,14 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
       let! oldTweets =
         Tweetinvi.TimelineAsync.GetUserTimeline(selfUser, 10) |> Async.AwaitTask
       let oldTweets =
-        oldTweets |> Seq.map Tweet
+        oldTweets |> Seq.map selfTweet
       items.AddRangeOnScheduler(oldTweets)
       return!
         userStream.StartStreamAsync() |> Async.AwaitTask
     }
 
   do
-    userStream.TweetCreatedByMe.Subscribe(fun e -> items.InsertOnScheduler(0, Tweet(e.Tweet)))
+    userStream.TweetCreatedByMe.Subscribe(fun e -> items.InsertOnScheduler(0, selfTweet e.Tweet))
     |> disposables.Add
 
   do
