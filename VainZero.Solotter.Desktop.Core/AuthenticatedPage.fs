@@ -3,6 +3,7 @@
 open System
 open System.Reactive.Linq
 open System.Windows.Input
+open DotNetKit.FSharp
 open Reactive.Bindings
 open VainZero.Solotter
 
@@ -23,16 +24,9 @@ with
     }
 
 [<Sealed>]
-type AuthenticatedPage(applicationAccessToken, userAccessToken) =
+type AuthenticatedPage(authentication: Authentication) =
   let twitter =
-    let (a: ApplicationAccessToken) = applicationAccessToken
-    let (u: UserAccessToken) = userAccessToken
-    Tweetinvi.Auth.SetUserCredentials
-      ( a.ConsumerKey
-      , a.ConsumerSecret
-      , u.AccessToken
-      , u.AccessSecret
-      )
+    authentication.Twitter
 
   let tweetEditor =
     new TweetEditor(twitter)
@@ -83,5 +77,5 @@ type AuthenticatedPage(applicationAccessToken, userAccessToken) =
       this.Dispose()
 
   interface IAuthenticationPage with
-    override this.UserAccessToken =
-      Some userAccessToken
+    override this.Authentication =
+      Some authentication

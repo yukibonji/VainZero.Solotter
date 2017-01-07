@@ -12,7 +12,7 @@ type AuthenticationFrame(accessToken: AccessToken) =
   let content =
     let emptyPage =
       { new IAuthenticationPage with 
-          override this.UserAccessToken = None
+          override this.Authentication = None
           override this.Subscribe(_) = Disposable.Empty
           override this.Dispose() = ()
       }
@@ -28,21 +28,35 @@ type AuthenticationFrame(accessToken: AccessToken) =
     | None ->
       Logout
 
-  let accessToken () =
-    { accessToken with UserAccessToken = content.Value.UserAccessToken }
+  let accessToken = ()
 
   let authenticationActions =
     content.SelectMany(fun actions -> actions :> IObservable<_>)
 
   let solve action =
     use previousPage = content.Value
-    content.Value <-
+    let (nextPage, authentication) =
       match action with
       | Login userAccessToken ->
-        new AuthenticatedPage(applicationAccessToken, userAccessToken) :> IAuthenticationPage
+        let authentication =
+          Authentication.FromAccessToken(applicationAccessToken, userAccessToken)
+        let page =
+          new AuthenticatedPage(authentication) :> IAuthenticationPage
+        (page, Some authentication)
       | Logout ->
-        new AuthenticationPage(applicationAccessToken) :> IAuthenticationPage
-    (accessToken ()).Save()
+        let page =
+          new AuthenticationPage(applicationAccessToken) :> IAuthenticationPage
+        (page, None)
+    content.Value <- nextPage
+
+    let accessToken =
+      {
+        ApplicationAccessToken =
+          applicationAccessToken
+        UserAccessToken =
+          authentication |> Option.map (fun a -> a.UserAccessToken)
+      }
+    accessToken.Save()
 
   let subscription =
     authenticationActions.StartWith(initialAction) |> Observable.subscribe solve

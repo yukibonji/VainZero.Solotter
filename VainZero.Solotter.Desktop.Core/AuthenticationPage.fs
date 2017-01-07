@@ -83,5 +83,5 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
       this.Dispose()
 
   interface IAuthenticationPage with
-    override this.UserAccessToken =
+    override this.Authentication =
       None
