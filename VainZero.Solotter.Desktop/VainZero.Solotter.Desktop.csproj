@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -197,11 +198,6 @@
   <ItemGroup>
     <Reference Include="DotNetKit.FSharp">
       <HintPath>..\packages\DotNetKit.FSharp\lib\DotNetKit.FSharp.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
-    <Reference Include="FSharp.Core">
-      <HintPath>..\packages\DotNetKit.FSharp\lib\FSharp.Core.dll</HintPath>
       <Private>True</Private>
       <Paket>True</Paket>
     </Reference>
