@@ -9,7 +9,7 @@ open Reactive.Bindings
 open VainZero.Solotter
 
 [<Sealed>]
-type AuthenticationFrame(accessToken: AccessToken) =
+type AuthenticationFrame(applicationAccessToken, initialAction: AuthenticationAction) =
   let disposables =
     new CompositeDisposable()
 
@@ -22,18 +22,6 @@ type AuthenticationFrame(accessToken: AccessToken) =
       }
     new ReactiveProperty<_>(initialValue = emptyPage)
     |> tap disposables.Add
-
-  let applicationAccessToken =
-    accessToken.ApplicationAccessToken
-
-  let initialAction =
-    match accessToken.UserAccessToken with
-    | Some userAccessToken ->
-      Login userAccessToken
-    | None ->
-      Logout
-
-  let accessToken = ()
 
   let authenticationActions =
     content.SelectMany(fun actions -> actions :> IObservable<_>)
@@ -77,6 +65,17 @@ type AuthenticationFrame(accessToken: AccessToken) =
   let dispose () =
     content.Value.Dispose()
     disposables.Dispose()
+
+  new(accessToken: AccessToken) =
+    let applicationAccessToken =
+      accessToken.ApplicationAccessToken
+    let initialAction =
+      match accessToken.UserAccessToken with
+      | Some userAccessToken ->
+        Login userAccessToken
+      | None ->
+        Logout
+    new AuthenticationFrame(applicationAccessToken, initialAction)
 
   new() =
     new AuthenticationFrame(AccessToken.Load())
