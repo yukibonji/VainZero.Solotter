@@ -1,7 +1,9 @@
 ﻿namespace VainZero.Solotter.Desktop
 
 open System
+open System.Reactive.Disposables
 open System.Threading
+open DotNetKit.FSharp
 open Reactive.Bindings
 
 [<Sealed>]
@@ -19,11 +21,16 @@ type Timeline(tweets) =
 
 [<Sealed>]
 type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
+  let disposables =
+    new CompositeDisposable()
+
   let items =
     new ReactiveCollection<_>()
+    |> tap disposables.Add
 
   let cancellationTokenSource =
     new CancellationTokenSource()
+    |> tap (fun cts -> disposables.Add(new CancellationDisposable(cts)))
 
   let userStream =
     Tweetinvi.Stream.CreateUserStream(twitter)
@@ -41,17 +48,15 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
         userStream.StartStreamAsync() |> Async.AwaitTask
     }
 
-  let subscription =
+  do
     userStream.TweetCreatedByMe.Subscribe(fun e -> items.InsertOnScheduler(0, Tweet(e.Tweet)))
+    |> disposables.Add
 
   do
     Async.Start(collectAsync, cancellationTokenSource.Token)
 
   let dispose () =
-    subscription.Dispose()
-    cancellationTokenSource.Cancel()
-    cancellationTokenSource.Dispose()
-    items.Dispose()
+    disposables.Dispose()
 
   let timeline =
     Timeline(items.ToReadOnlyReactiveCollection())
