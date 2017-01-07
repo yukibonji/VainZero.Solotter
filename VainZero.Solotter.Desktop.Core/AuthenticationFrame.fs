@@ -10,30 +10,23 @@ open VainZero.Solotter
 [<Sealed>]
 type AuthenticationFrame
   private
-  ( content: ReactiveProperty<IAuthenticationPage>
+  ( content: IReadOnlyReactiveProperty<IAuthenticationPage>
   , disposable: IDisposable
   ) =
   let dispose () =
-    content.Value.Dispose()
     disposable.Dispose()
 
   private new(applicationAccessToken, initialAction: AuthenticationAction) =
     let disposables =
       new CompositeDisposable()
 
-    let content =
-      let emptyPage =
-        { new IAuthenticationPage with 
-            override this.Authentication = None
-            override this.Subscribe(_) = Disposable.Empty
-            override this.Dispose() = ()
-        }
-      new ReactiveProperty<_>(initialValue = emptyPage)
-
-    disposables.Add(content)
+    let pageDisposable =
+      new SerialDisposable()
+    disposables.Add(pageDisposable)
 
     let authenticationActions =
-      content.SelectMany(fun actions -> actions :> IObservable<_>)
+      new Subject<AuthenticationAction>()
+    disposables.Add(authenticationActions)
 
     let saveAccessToken action =
       let userAccessToken =
@@ -54,20 +47,28 @@ type AuthenticationFrame
     authenticationActions |> Observable.subscribe saveAccessToken
     |> disposables.Add
 
-    let solve action =
-      let nextPage =
-        match action with
-        | Login userAccessToken ->
-          let authentication =
-            Authentication.FromAccessToken(applicationAccessToken, userAccessToken)
-          new AuthenticatedPage(authentication) :> IAuthenticationPage
-        | Logout ->
-          new AuthenticationPage(applicationAccessToken) :> IAuthenticationPage
-      content.Value.Dispose()
-      content.Value <- nextPage
+    let pageFromAction action =
+      match action with
+      | Login userAccessToken ->
+        let authentication =
+          Authentication.FromAccessToken(applicationAccessToken, userAccessToken)
+        new AuthenticatedPage(authentication) :> IAuthenticationPage
+      | Logout ->
+        new AuthenticationPage(applicationAccessToken) :> IAuthenticationPage
 
-    authenticationActions.StartWith(initialAction) |> Observable.subscribe solve
-    |> disposables.Add
+    let content =
+      authenticationActions
+        .StartWith(initialAction)
+        .Select(pageFromAction)
+        .Do(fun page ->
+          pageDisposable.Disposable <-
+            StableCompositeDisposable.Create
+              ( page
+              , page |> Observable.subscribe authenticationActions.OnNext
+              )
+          )
+        .ToReadOnlyReactiveProperty()
+    disposables.Add(content)
 
     new AuthenticationFrame(content, disposables)
 
