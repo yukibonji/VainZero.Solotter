@@ -4,16 +4,27 @@ open System
 open System.Reactive.Disposables
 open System.Threading
 open DotNetKit.FSharp
+open DotNetKit.Functional.Commands
 open Reactive.Bindings
 open System.Windows
 
 [<Sealed>]
 type Tweet(tweet: Tweetinvi.Models.ITweet) =
+  let copyCommand =
+    new UnitCommand
+      (fun () ->
+        Clipboard.SetText(tweet.Text)
+        MessageBox.Show("Copied.") |> ignore
+      )
+
   member this.Id = tweet.Id
   member this.Text = tweet.Text
   member this.CreatorName = tweet.CreatedBy.Name
   member this.CreatorScreenName = tweet.CreatedBy.ScreenName
   member this.CreationDateTime = tweet.CreatedAt.ToLocalTime()
+
+  member this.CopyCommand =
+    copyCommand
 
   member val DeleteCommand =
     new ReactiveCommand()
