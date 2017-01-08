@@ -1,16 +1,54 @@
 ﻿namespace VainZero.Solotter.Desktop
 
 open System
+open System.Reactive.Disposables
 open System.Threading
+open DotNetKit.FSharp
+open DotNetKit.Functional.Commands
 open Reactive.Bindings
+open System.Windows
 
 [<Sealed>]
 type Tweet(tweet: Tweetinvi.Models.ITweet) =
+  let copyCommand =
+    new UnitCommand
+      (fun () ->
+        Clipboard.SetText(tweet.Text)
+        MessageBox.Show("Copied.") |> ignore
+      )
+
   member this.Id = tweet.Id
   member this.Text = tweet.Text
   member this.CreatorName = tweet.CreatedBy.Name
   member this.CreatorScreenName = tweet.CreatedBy.ScreenName
   member this.CreationDateTime = tweet.CreatedAt.ToLocalTime()
+
+  member this.CopyCommand =
+    copyCommand
+
+  member val DeleteCommand =
+    new ReactiveCommand()
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]  
+module Tweet =
+  let deleteAsync twitter (tweet: Tweet) =
+    async {
+      let message =
+        sprintf "Do you want to delete this tweet?\r\n\r\n%s" tweet.Text
+      if
+        MessageBox.Show(message, "Solotter", MessageBoxButton.YesNo)
+        = MessageBoxResult.Yes
+      then
+        let! result = Tweetinvi.TweetAsync.DestroyTweet(tweet.Id) |> Async.AwaitTask
+        if result then
+          MessageBox.Show("Deleted successfully.") |> ignore
+          return true
+        else
+          MessageBox.Show("Deletion failed.") |> ignore
+          return false
+      else
+        return false
+    }
 
 [<Sealed>]
 type Timeline(tweets) =
@@ -19,14 +57,34 @@ type Timeline(tweets) =
 
 [<Sealed>]
 type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
+  let disposables =
+    new CompositeDisposable()
+
   let items =
     new ReactiveCollection<_>()
+    |> tap disposables.Add
 
   let cancellationTokenSource =
     new CancellationTokenSource()
+    |> tap (fun cts -> disposables.Add(new CancellationDisposable(cts)))
 
   let userStream =
     Tweetinvi.Stream.CreateUserStream(twitter)
+
+  let deleteTweet tweet =
+    async {
+      let! isDeleted = tweet |> Tweet.deleteAsync twitter
+      if isDeleted then
+        items.RemoveOnScheduler(tweet)
+    } |> Async.Start
+
+  let selfTweet tweet =
+    Tweet(tweet)
+    |> tap
+      (fun tweet ->
+        tweet.DeleteCommand |> Observable.subscribe (fun _ -> deleteTweet tweet)
+        |> disposables.Add
+      )
 
   let collectAsync =
     async {
@@ -35,23 +93,21 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
       let! oldTweets =
         Tweetinvi.TimelineAsync.GetUserTimeline(selfUser, 10) |> Async.AwaitTask
       let oldTweets =
-        oldTweets |> Seq.map Tweet
+        oldTweets |> Seq.map selfTweet
       items.AddRangeOnScheduler(oldTweets)
       return!
         userStream.StartStreamAsync() |> Async.AwaitTask
     }
 
-  let subscription =
-    userStream.TweetCreatedByMe.Subscribe(fun e -> items.InsertOnScheduler(0, Tweet(e.Tweet)))
+  do
+    userStream.TweetCreatedByMe.Subscribe(fun e -> items.InsertOnScheduler(0, selfTweet e.Tweet))
+    |> disposables.Add
 
   do
     Async.Start(collectAsync, cancellationTokenSource.Token)
 
   let dispose () =
-    subscription.Dispose()
-    cancellationTokenSource.Cancel()
-    cancellationTokenSource.Dispose()
-    items.Dispose()
+    disposables.Dispose()
 
   let timeline =
     Timeline(items.ToReadOnlyReactiveCollection())
