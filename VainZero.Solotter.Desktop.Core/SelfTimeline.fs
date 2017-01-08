@@ -10,27 +10,24 @@ open System.Windows
 
 [<Sealed>]
 type Tweet(tweet: Tweetinvi.Models.ITweet) =
-  let copyCommand =
-    new UnitCommand
-      (fun () ->
-        Clipboard.SetText(tweet.Text)
-        MessageBox.Show("Copied.") |> ignore
-      )
-
   member this.Id = tweet.Id
   member this.Text = tweet.Text
   member this.CreatorName = tweet.CreatedBy.Name
   member this.CreatorScreenName = tweet.CreatedBy.ScreenName
   member this.CreationDateTime = tweet.CreatedAt.ToLocalTime()
 
-  member this.CopyCommand =
-    copyCommand
+  member val CopyCommand =
+    new ReactiveCommand()
 
   member val DeleteCommand =
     new ReactiveCommand()
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]  
 module Tweet =
+  let copyText (this: Tweet) =
+    Clipboard.SetText(this.Text)
+    MessageBox.Show("Copied.") |> ignore
+
   let deleteAsync twitter (tweet: Tweet) =
     async {
       let message =
@@ -82,6 +79,8 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
     Tweet(tweet)
     |> tap
       (fun tweet ->
+        tweet.CopyCommand |> Observable.subscribe (fun _ -> Tweet.copyText tweet)
+        |> disposables.Add
         tweet.DeleteCommand |> Observable.subscribe (fun _ -> deleteTweet tweet)
         |> disposables.Add
       )
