@@ -9,7 +9,7 @@ open Reactive.Bindings
 open VainZero.Solotter
 
 [<Sealed>]
-type AuthenticationPage(accessToken: ApplicationAccessToken) =
+type AuthenticationPage(accessToken: ApplicationAccessToken, notifier: Notifier) =
   let twitterCredential =
     let t = accessToken
     Tweetinvi.Models.TwitterCredentials(t.ConsumerKey, t.ConsumerSecret)
@@ -36,8 +36,7 @@ type AuthenticationPage(accessToken: ApplicationAccessToken) =
     let credential =
       Tweetinvi.AuthFlow.CreateCredentialsFromVerifierCode(pinCode, context)
     if credential |> isNull then
-      // TODO: fix
-      System.Windows.MessageBox.Show("Incorrect PinCode?") |> ignore
+      notifier.NotifyInfo("Incorrect PinCode.")
       Observable.Never()
     else
       {

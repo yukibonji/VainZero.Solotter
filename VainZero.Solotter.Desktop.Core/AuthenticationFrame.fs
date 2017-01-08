@@ -18,6 +18,9 @@ type AuthenticationFrame
     disposable.Dispose()
 
   private new(applicationAccessToken, initialAction: AuthenticationAction) =
+    let notifier =
+      MessageBoxNotifier("Solotter")
+
     let disposables =
       new CompositeDisposable()
 
@@ -53,9 +56,9 @@ type AuthenticationFrame
       | Login userAccessToken ->
         let authentication =
           Authentication.FromAccessToken(applicationAccessToken, userAccessToken)
-        new AuthenticatedPage(authentication) :> IAuthenticationPage
+        new AuthenticatedPage(authentication, notifier) :> IAuthenticationPage
       | Logout ->
-        new AuthenticationPage(applicationAccessToken) :> IAuthenticationPage
+        new AuthenticationPage(applicationAccessToken, notifier) :> IAuthenticationPage
 
     let content =
       authenticationActions

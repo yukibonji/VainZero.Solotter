@@ -3,10 +3,11 @@
 open System
 open System.Reactive.Disposables
 open System.Threading
+open System.Windows
 open DotNetKit.FSharp
 open DotNetKit.Functional.Commands
 open Reactive.Bindings
-open System.Windows
+open VainZero.Solotter
 
 [<Sealed>]
 type Tweet(tweet: Tweetinvi.Models.ITweet) =
@@ -24,24 +25,21 @@ type Tweet(tweet: Tweetinvi.Models.ITweet) =
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]  
 module Tweet =
-  let copyText (this: Tweet) =
+  let copyText (notifier: Notifier) (this: Tweet) =
     Clipboard.SetText(this.Text)
-    MessageBox.Show("Copied.") |> ignore
+    notifier.NotifyInfo("Copied.")
 
-  let deleteAsync twitter (tweet: Tweet) =
+  let deleteAsync twitter (notifier: Notifier) (tweet: Tweet) =
     async {
       let message =
         sprintf "Do you want to delete this tweet?\r\n\r\n%s" tweet.Text
-      if
-        MessageBox.Show(message, "Solotter", MessageBoxButton.YesNo)
-        = MessageBoxResult.Yes
-      then
+      if notifier.Confirm(message) then
         let! result = Tweetinvi.TweetAsync.DestroyTweet(tweet.Id) |> Async.AwaitTask
         if result then
-          MessageBox.Show("Deleted successfully.") |> ignore
+          notifier.NotifyInfo("Deleted successfully.")
           return true
         else
-          MessageBox.Show("Deletion failed.") |> ignore
+          notifier.NotifyInfo("Deletion failed.")
           return false
       else
         return false
@@ -53,7 +51,7 @@ type Timeline(tweets) =
     tweets
 
 [<Sealed>]
-type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
+type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials, notifier) =
   let disposables =
     new CompositeDisposable()
 
@@ -70,7 +68,7 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
 
   let deleteTweet tweet =
     async {
-      let! isDeleted = tweet |> Tweet.deleteAsync twitter
+      let! isDeleted = tweet |> Tweet.deleteAsync twitter notifier
       if isDeleted then
         items.RemoveOnScheduler(tweet)
     } |> Async.Start
@@ -79,7 +77,7 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
     Tweet(tweet)
     |> tap
       (fun tweet ->
-        tweet.CopyCommand |> Observable.subscribe (fun _ -> Tweet.copyText tweet)
+        tweet.CopyCommand |> Observable.subscribe (fun _ -> Tweet.copyText notifier tweet)
         |> disposables.Add
         tweet.DeleteCommand |> Observable.subscribe (fun _ -> deleteTweet tweet)
         |> disposables.Add
