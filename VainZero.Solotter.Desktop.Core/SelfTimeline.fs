@@ -31,8 +31,12 @@ module Tweet =
         let! result = Tweetinvi.TweetAsync.DestroyTweet(tweet.Id) |> Async.AwaitTask
         if result then
           MessageBox.Show("Deleted successfully.") |> ignore
+          return true
         else
           MessageBox.Show("Deletion failed.") |> ignore
+          return false
+      else
+        return false
     }
 
 [<Sealed>]
@@ -56,12 +60,18 @@ type SelfTimeline(twitter: Tweetinvi.Models.ITwitterCredentials) =
   let userStream =
     Tweetinvi.Stream.CreateUserStream(twitter)
 
+  let deleteTweet tweet =
+    async {
+      let! isDeleted = tweet |> Tweet.deleteAsync twitter
+      if isDeleted then
+        items.RemoveOnScheduler(tweet)
+    } |> Async.Start
+
   let selfTweet tweet =
     Tweet(tweet)
     |> tap
       (fun tweet ->
-        tweet.DeleteCommand |> Observable.subscribe
-          (fun _ -> tweet |> Tweet.deleteAsync twitter |> Async.Start)
+        tweet.DeleteCommand |> Observable.subscribe (fun _ -> deleteTweet tweet)
         |> disposables.Add
       )
 
