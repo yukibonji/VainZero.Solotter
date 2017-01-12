@@ -44,12 +44,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Windows\Converters\DateTimeToLocalFullDateTimeConverter.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\VainZero.Solotter.Core\VainZero.Solotter.Core.fsproj">
-      <Project>{eb3b1ece-9746-44c1-a7fe-8ed9311a4fdd}</Project>
-      <Name>VainZero.Solotter.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
