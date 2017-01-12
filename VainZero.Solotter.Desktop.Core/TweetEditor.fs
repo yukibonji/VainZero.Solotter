@@ -4,9 +4,10 @@ open System
 open System.Reactive.Linq
 open System.Reactive.Threading.Tasks
 open Reactive.Bindings
+open VainZero.Solotter
 
 [<Sealed>]
-type TweetEditor(twitter: Tweetinvi.Models.ITwitterCredentials) =
+type TweetEditor(twitter: Tweetinvi.Models.ITwitterCredentials, notifier: Notifier) =
   [<Literal>]
   let TweetLength = 140
 
@@ -28,8 +29,7 @@ type TweetEditor(twitter: Tweetinvi.Models.ITwitterCredentials) =
     |> Observable.subscribe
       (function
         | null ->
-          // TODO: fix
-          System.Windows.MessageBox.Show("Failed.") |> ignore
+          notifier.NotifyInfo("Submission failed.") |> ignore
         | tweet ->
           text.Value <- ""
       )

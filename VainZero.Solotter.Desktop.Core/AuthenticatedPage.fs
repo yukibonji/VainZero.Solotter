@@ -24,15 +24,15 @@ with
     }
 
 [<Sealed>]
-type AuthenticatedPage(authentication: Authentication) =
+type AuthenticatedPage(authentication: Authentication, notifier: Notifier) =
   let twitter =
     authentication.Twitter
 
   let tweetEditor =
-    new TweetEditor(twitter)
+    new TweetEditor(twitter, notifier)
 
   let selfTimeline =
-    new SelfTimeline(twitter)
+    new SelfTimeline(twitter, notifier)
 
   let tabItems =
     [|
