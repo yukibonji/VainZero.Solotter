@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
+using System.Windows.Navigation;
 
 namespace VainZero.Solotter.Desktop
 {
@@ -13,5 +16,13 @@ namespace VainZero.Solotter.Desktop
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            InitializeComponent();
+
+            var settings = Desktop.Properties.Settings.Default;
+            var themeManager = new ThemeManager();
+            themeManager.Load(Resources, settings.ThemeColorName);
+        }
     }
 }
