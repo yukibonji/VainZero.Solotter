@@ -20,8 +20,9 @@ namespace VainZero.Solotter.Desktop
         {
             InitializeComponent();
 
+            var settings = Desktop.Properties.Settings.Default;
             var themeManager = new ThemeManager();
-            themeManager.Load(Resources, "Indigo");
+            themeManager.Load(Resources, settings.ThemeColorName);
         }
     }
 }

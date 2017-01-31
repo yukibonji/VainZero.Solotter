@@ -25,13 +25,25 @@ namespace VainZero.Solotter.Desktop.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Meiryo")]
         public string TweetEditorFontFamily {
             get {
                 return ((string)(this["TweetEditorFontFamily"]));
             }
             set {
                 this["TweetEditorFontFamily"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Indigo")]
+        public string ThemeColorName {
+            get {
+                return ((string)(this["ThemeColorName"]));
+            }
+            set {
+                this["ThemeColorName"] = value;
             }
         }
     }
