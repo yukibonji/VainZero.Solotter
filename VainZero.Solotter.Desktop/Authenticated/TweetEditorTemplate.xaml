@@ -25,6 +25,7 @@
                 Margin="5,2,5,2"
                 AcceptsReturn="True"
                 TextWrapping="Wrap"
+                TextAlignment="Left"
                 MaxLines="5"
                 FontFamily="{Binding TweetEditorFontFamily, Source={x:Static properties:Settings.Default}}"
                 Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"
