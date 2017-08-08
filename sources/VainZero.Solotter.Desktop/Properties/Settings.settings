@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VainZero.Solotter.Desktop.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="TweetEditorFontFamily" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Meiryo</Value>
+    </Setting>
+    <Setting Name="ThemeColorName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Indigo</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
