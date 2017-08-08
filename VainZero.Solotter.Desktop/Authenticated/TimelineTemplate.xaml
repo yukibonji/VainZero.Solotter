@@ -10,13 +10,8 @@
             IsTabStop="False"
             ItemsSource="{Binding Tweets}"
             MaxHeight="450"
-            >
-            <ListBox.Resources>
-                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesignListBoxItem}">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListBox.Resources>
-        </ListBox>
+            HorizontalContentAlignment="Stretch"
+            />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type desktopCore:SelfTimeline}">
